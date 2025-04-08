@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Animal from "./Animal";
 
-
 const Page = ({ animals, page, pageLength, numPages }) => {
 
     const [start, setStart] = useState(0);
@@ -34,13 +33,14 @@ const Page = ({ animals, page, pageLength, numPages }) => {
                 <tbody>
                     {animals.slice(start, end).map((animal, index) => <tr key={index} >< Animal
                         
+                        id = {animal.id || "N/A"}
                         name = {animal.name || "N/A"}
                         type = {animal.type || "N/A"}
                         breed = {animal.breeds.primary || "N/A"}
                         age = {animal.age || "N/A"}
                         gender = {animal.gender || "N/A"}
                         size = {animal.size || "N/A"}
-                    /></tr> )}
+                    /></tr>  )}
                 </tbody>
             </table>
         </>

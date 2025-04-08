@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router";
 
-const Animal = ({ name, type, breed, age, gender, size }) => {
+const Animal = ({ id, name, type, breed, age, gender, size }) => {
     return (
         <>
 
             
 
-            <td>{name}</td>
+            <td><Link to={`/detailView/${id}`} className="linkStyle" style={{color:"#c4a484", fontWeight:"bold"}}>{name}</Link></td>
             <td>{breed}</td>
             <td>{type}</td>
             <td>{gender}</td>

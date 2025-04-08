@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import Page from './components/Page';
+import { useOutletContext } from 'react-router-dom';
+import Charts from './Charts';
 
 import './App.css'
 
-const API_KEY = import.meta.env.VITE_PETFINDER_API_KEY;
-const API_SECRET = import.meta.env.VITE_PETFINDER_API_SECRET;
+// const API_KEY = import.meta.env.VITE_PETFINDER_API_KEY;
+// const API_SECRET = import.meta.env.VITE_PETFINDER_API_SECRET;
 
 function App() {
 
   
-
-  const [token, setToken] = useState(null);
-  const [tokenExpiration, setTokenExpiration] = useState(null);
-  const [animals, setAnimals] = useState([]);
+  const { animals } = useOutletContext();
+  // const [token, setToken] = useState(null);
+  // const [tokenExpiration, setTokenExpiration] = useState(null);
+  // const [animals, setAnimals] = useState([]);
   const [page, setPage] = useState(1);
   const [numPages, setNumPages] = useState(1);
   const PAGE_LENGTH = 20;
@@ -36,93 +38,93 @@ function App() {
   })
 
 
-  const getAccessToken = async () => {
+  // const getAccessToken = async () => {
 
-    if (token && tokenExpiration > Date.now()) {
-      return token; 
-    }
+  //   if (token && tokenExpiration > Date.now()) {
+  //     return token; 
+  //   }
 
-    const url = "https://api.petfinder.com/v2/oauth2/token";
-    const response_type = {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        grant_type: "client_credentials",
-        client_id: API_KEY,
-        client_secret: API_SECRET
-      })
-    }
+  //   const url = "https://api.petfinder.com/v2/oauth2/token";
+  //   const response_type = {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //     body: new URLSearchParams({
+  //       grant_type: "client_credentials",
+  //       client_id: API_KEY,
+  //       client_secret: API_SECRET
+  //     })
+  //   }
 
-    try {
-      const response = await fetch(url, response_type);
+  //   try {
+  //     const response = await fetch(url, response_type);
 
-      if (!response.ok) throw new Error(`Token request failed: ${response.status}`);
+  //     if (!response.ok) throw new Error(`Token request failed: ${response.status}`);
 
-      const data = await response.json();
-      setToken(data.access_token);
-      setTokenExpiration(Date.now() + data.expires_in * 1000);
+  //     const data = await response.json();
+  //     setToken(data.access_token);
+  //     setTokenExpiration(Date.now() + data.expires_in * 1000);
 
-      return data.access_token;
-    } catch(error) {
-      console.error("Error fetching access token: ", error);
-      return null;
-    }
+  //     return data.access_token;
+  //   } catch(error) {
+  //     console.error("Error fetching access token: ", error);
+  //     return null;
+  //   }
 
-  }
+  // }
 
-  const getAnimals = async (type = null) => {
-    const accessToken = await getAccessToken();
-    if (!accessToken) return [];
+  // const getAnimals = async (type = null) => {
+  //   const accessToken = await getAccessToken();
+  //   if (!accessToken) return [];
     
-    let url = "https://api.petfinder.com/v2/animals?limit=10";
-    if (type) url += `&type=${type}`;
-    const response_type = {
-      method: "GET",
-      headers: { "Authorization" : `Bearer ${accessToken}` }
-    };
+  //   let url = "https://api.petfinder.com/v2/animals?limit=10";
+  //   if (type) url += `&type=${type}`;
+  //   const response_type = {
+  //     method: "GET",
+  //     headers: { "Authorization" : `Bearer ${accessToken}` }
+  //   };
 
-    try {
-      const response = await fetch(url, response_type);
-      if (!response.ok) throw new Error(`Animal request failed: ${response.status}`);
-      const data = await response.json();
-      console.log(data.animals);
-      return data.animals;
-    } catch(error) {
-      console.error("Error fetching animals: ", error);
-      return [];
-    }
-  }
+  //   try {
+  //     const response = await fetch(url, response_type);
+  //     if (!response.ok) throw new Error(`Animal request failed: ${response.status}`);
+  //     const data = await response.json();
+  //     console.log(data.animals);
+  //     return data.animals;
+  //   } catch(error) {
+  //     console.error("Error fetching animals: ", error);
+  //     return [];
+  //   }
+  // }
 
-  const fetchAllAnimals = async () => {
-    const any = await getAnimals();
-    const dogs = await getAnimals("Dog");
-    const cats = await getAnimals("Cat");
-    const birds = await getAnimals("Bird");
-    const rabbits = await getAnimals("Rabbit");
+  // const fetchAllAnimals = async () => {
+  //   const any = await getAnimals();
+  //   const dogs = await getAnimals("Dog");
+  //   const cats = await getAnimals("Cat");
+  //   const birds = await getAnimals("Bird");
+  //   const rabbits = await getAnimals("Rabbit");
 
-    const combinedAnimals = [...any, ...dogs, ...cats, ...birds, ...rabbits];
-    console.log(combinedAnimals);
-    return shuffleArray(combinedAnimals);
-  }
+  //   const combinedAnimals = [...any, ...dogs, ...cats, ...birds, ...rabbits];
+  //   // console.log(combinedAnimals);
+  //   return shuffleArray(combinedAnimals);
+  // }
 
-  const displayAnimals = async () => {
-    const myAnimals = await fetchAllAnimals();
-    setAnimals(myAnimals);
-    //setNumPages(Math.ceil((myAnimals.length)/PAGE_LENGTH));
-  }
+  // const displayAnimals = async () => {
+  //   const myAnimals = await fetchAllAnimals();
+  //   setAnimals(myAnimals);
+  //   //setNumPages(Math.ceil((myAnimals.length)/PAGE_LENGTH));
+  // }
 
-  const shuffleArray = (array) => {
+  // const shuffleArray = (array) => {
     
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); 
-      [array[i], array[j]] = [array[j], array[i]]; 
-    }
-    return array;
-  };
+  //   for (let i = array.length - 1; i > 0; i--) {
+  //     const j = Math.floor(Math.random() * (i + 1)); 
+  //     [array[i], array[j]] = [array[j], array[i]]; 
+  //   }
+  //   return array;
+  // };
 
-  useEffect(()=>{
-    displayAnimals();
-  }, [])
+  // useEffect(()=>{
+  //   displayAnimals();
+  // }, [])
 
   const onNext = () => {
 
@@ -141,31 +143,40 @@ function App() {
   }
 
   const getStats = () => {
-
-    let dogs = 0, cats = 0, birds = 0, rabbits = 0, others = 0;
-
+    const chartData = {
+      Dog:    { count: 0, Baby: 0, Young: 0, Adult: 0, Senior: 0 },
+      Cat:    { count: 0, Baby: 0, Young: 0, Adult: 0, Senior: 0 },
+      Bird:   { count: 0, Baby: 0, Young: 0, Adult: 0, Senior: 0 },
+      Rabbit: { count: 0, Baby: 0, Young: 0, Adult: 0, Senior: 0 },
+      Others: { count: 0, Baby: 0, Young: 0, Adult: 0, Senior: 0 }
+    };
+  
     for (const animal of animals) {
-      if(animal.type == "Dog"){
-        dogs++;
-      } else if(animal.type == "Cat"){
-        cats++;
-      } else if(animal.type == "Bird"){
-        birds++
-      } else if(animal.type == "Rabbit"){
-        rabbits++
-      } else {
-        others++
+      const type = chartData[animal.type] ? animal.type : "Others";
+      const age = animal.age;
+  
+      if (chartData[type][age] !== undefined) {
+        chartData[type].count++;
+        chartData[type][age]++;
       }
     }
+  
+    // Update state values
+    setCountDogs(chartData.Dog.count);
+    setCountCats(chartData.Cat.count);
+    setCountBirds(chartData.Bird.count);
+    setCountRabbits(chartData.Rabbit.count);
+    setCountOthers(chartData.Others.count);
+  
+    return chartData;
+  };
 
-    setCountDogs(dogs);
-    setCountCats(cats);
-    setCountBirds(birds);
-    setCountRabbits(rabbits);
-    setCountOthers(others);
+  const [chartData, setChartData] = useState(null);
 
-
-  }
+  useEffect(() => {
+    const stats = getStats();     // Your existing function
+    setChartData(stats);          // Save the returned data
+  }, [animals]);
 
   const handleFilterChange = (e) => {
 
@@ -222,19 +233,18 @@ function App() {
     onFilter();
 
   }, [filters, animals]);
+
+
+  const [showCharts, setShowCharts] = useState(true);
+
+  const toggleShowCharts = () => {
+    setShowCharts((prevShowCharts) => !prevShowCharts);
+  }
   
 
   return (
-    <div className="App">
-      <div className="sidebar">
-
-        <h1>adopt</h1>
-
-        <h3>Dashboard</h3>
-        <h3>About</h3>
-        <h3>Contact Us</h3>
-
-      </div>
+    <div >
+      
       <div className="main">
 
         <div className="statDiv">
@@ -265,6 +275,8 @@ function App() {
         </div>
 
         <div className="filterDiv">
+
+          <p style={{fontStyle:'italic'}} >Interesting: Most available pets are Dogs, and many Rabbits are Seniors. Try filtering by age or type to explore more trends!</p>
 
           <input
             type="text"
@@ -338,6 +350,13 @@ function App() {
           <button onClick={onNext} >Next</button>
           <p>Page {page}/{numPages}</p>
 
+        </div>
+
+        <div>
+          <br></br>
+          <br></br>
+          <button onClick={toggleShowCharts} >{showCharts ? "Hide Charts" : "Show Charts"}</button>
+          { chartData &&  showCharts && <Charts data={chartData} />}
         </div>
 
       </div>
